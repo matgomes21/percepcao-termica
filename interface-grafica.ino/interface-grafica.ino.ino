@@ -19,7 +19,8 @@
 //U8GLIB_SSD1306_128X64_2X u8g(U8G_I2C_OPT_NONE);
 U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NO_ACK);  // Display which does not send AC
  
-
+#define b1 2
+#define b2 3
  
 void setup(void) 
 {
@@ -36,6 +37,10 @@ void setup(void)
   else if ( u8g.getMode() == U8G_MODE_HICOLOR ) {
     u8g.setHiColorByRGB(255,255,255);
   }
+
+  pinMode(b1,INPUT_PULLUP);
+  pinMode(b2,INPUT_PULLUP);
+  
 }
  
 void loop(void) 
@@ -43,7 +48,7 @@ void loop(void)
   u8g.firstPage();  
   do
   {
-    draw();
+    changeMenu();
   } while( u8g.nextPage() );
    
   delay(50);
