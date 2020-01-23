@@ -1,5 +1,6 @@
 int menu=1;
-boolean b1_flag = 1,b2_flag = 1,b1_pressed=0,b2_pressed=0;
+boolean b1_flag = 1,b2_flag = 1,b1_pressed=0,b2_pressed=0,TC_flag=1;
+char T[10];
 
 void escolhaMenu(){
   switch(menu){
@@ -60,13 +61,45 @@ void menuInicial(){
 
   
 }
+// Conecte pino 1 do sensor (esquerda) ao +5V
+// Conecte pino 2 do sensor ao pino de dados definido em seu Arduino
+// Conecte pino 4 do sensor ao GND
+// Conecte o resistor de 10K entre pin 2 (dados) 
+// e ao pino 1 (VCC) do sensor
+float t;
+void readTemperatura() 
+{
+  // A leitura da temperatura e umidade pode levar 250ms!
+  // O atraso do sensor pode chegar a 2 segundos.
+  t = dht.readTemperature();
+  // testa se retorno é valido, caso contrário algo está errado.
+  if (isnan(t)) 
+  {
+    Serial.println("Failed to read from DHT");
+  } 
+  else
+  {
+    Serial.print("Temperatura: ");
+    Serial.print(t);
+    Serial.println(" *C");
+  }
+}
 
 void menuTC(){
+  if(TC_flag){
+    readTemperatura();
+    TC_flag = 0;
+  }
   u8g.setFont(u8g_font_fub30);
-  u8g.drawStr( 10, 57, "40C");
+  dtostrf(t,3,1,T);
+  u8g.drawStr( 10, 57, T);
 }
 
 void menuTeste(){
+  if(TC_flag){
+    readTemperatura();
+    TC_flag=0;
+  }
   u8g.setFont(u8g_font_fub30);
   u8g.drawStr( 10, 57, "Teste");
 }

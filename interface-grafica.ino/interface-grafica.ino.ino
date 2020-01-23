@@ -1,6 +1,13 @@
 //github.com/olikraus/u8glib/wiki/userreference
 #include "U8glib.h"
- 
+#include "DHT.h"
+#include <string.h>
+
+#define DHTPIN A1 // pino que estamos conectado
+#define DHTTYPE DHT11 // DHT 11
+
+DHT dht(DHTPIN, DHTTYPE);
+
 // setup u8g object, please remove comment from one of the following constructor calls
 // IMPORTANT NOTE: The following list is incomplete. The complete list of supported 
 // devices with all constructor calls is here: http://code.google.com/p/u8glib/wiki/device
@@ -21,10 +28,12 @@ U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NO_ACK);  // Display which does not send A
  
 #define b1 2
 #define b2 3
+#define acenador 4
  
 void setup(void) 
 {
   Serial.begin(9600);
+  dht.begin();
   if ( u8g.getMode() == U8G_MODE_R3G3B2 ) {
     u8g.setColorIndex(255);     // white
   }
@@ -40,7 +49,7 @@ void setup(void)
 
   pinMode(b1,INPUT_PULLUP);
   pinMode(b2,INPUT_PULLUP);
-  
+  pinMode(acenador,INPUT_PULLUP);
 }
  
 void loop(void) 
