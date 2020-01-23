@@ -1,5 +1,6 @@
-int menu=1;
-boolean b1_flag = 1,b2_flag = 1,b1_pressed=0,b2_pressed=0,TC_flag=1;
+int menu=1,first=1;
+boolean terminar;
+boolean b1_flag = 1,b2_flag = 1,b1_pressed=0,b2_pressed=0,TC_flag=1,a_pressed=0,a_flag=1;
 char T[10];
 
 void escolhaMenu(){
@@ -13,6 +14,8 @@ void escolhaMenu(){
     case 3:
       menuTeste();
       break;
+    case 4:
+      menuIniciarTeste();
   }
 }
 
@@ -100,6 +103,43 @@ void menuTeste(){
     readTemperatura();
     TC_flag=0;
   }
-  u8g.setFont(u8g_font_fub30);
-  u8g.drawStr( 10, 57, "Teste");
+  u8g.setFont(u8g_font_8x13);
+  u8g.drawStr(5, 25, "Pressione acenador");
+  u8g.drawStr(5,35,"para iniciar");
+
+  if(!digitalRead(acenador)){
+    a_pressed=1;
+  }
+  if(digitalRead(acenador) && a_pressed && a_flag)
+  {
+      a_pressed = 0;
+      menu = 4;    
+      a_flag=0;
+      terminar=1;
+      escolhaMenu();
+  }  
+}
+
+void menuIniciarTeste(){
+  if(!digitalRead(acenador)){
+    terminar=0;
+  }
+  if(terminar==0){
+    u8g.setFont(u8g_font_fub30);
+    dtostrf(t,3,1,T);
+    u8g.drawStr( 10, 57, T);
+  }
+  if(first&&terminar){
+    u8g.setFont(u8g_font_fub30);
+    dtostrf(t,3,1,T);
+    u8g.drawStr( 10, 57, T);
+    first=0;
+  }
+  if(first==0&&terminar){
+    //delay(1000);
+    t++;
+    u8g.setFont(u8g_font_fub30);
+    dtostrf(t,3,1,T);
+    u8g.drawStr( 10, 57, T);
+  }
 }
