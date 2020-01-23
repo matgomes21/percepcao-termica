@@ -48,7 +48,7 @@ void loop(void)
   u8g.firstPage();  
   do
   {
-    changeMenu();
+     changeMenu();
   } while( u8g.nextPage() );
    
   delay(50);

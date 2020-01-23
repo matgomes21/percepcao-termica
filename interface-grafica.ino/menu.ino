@@ -1,4 +1,5 @@
-int menu=1,i=0;
+int menu=1;
+boolean b1_flag = 1,b2_flag = 1,b1_pressed=0,b2_pressed=0;
 
 void escolhaMenu(){
   switch(menu){
@@ -15,18 +16,38 @@ void escolhaMenu(){
 }
 
 void changeMenu(){
-  if(!digitalRead(b1)==HIGH){
-    menu = 2;
-    i=1;
+  if(!digitalRead(b1)){
+    b1_pressed=1;
   }
-  if(!digitalRead(b2)==HIGH){
-    menu = 3;
+  if(!digitalRead(b2)){
+    b2_pressed=1;
   }
-  if(i==1&&!digitalRead(b1)==HIGH){
-    menu=1;
-    i=0;
-  }
-  escolhaMenu();
+   if(digitalRead(b1) && b1_pressed && b1_flag)
+   {
+       b1_pressed = 0;
+       menu = 2;    
+       b1_flag=0;
+       delay(200);
+   }
+   else if(digitalRead(b1) && b1_pressed && !b1_flag){
+       b1_pressed=0;
+       menu=1;
+       b1_flag=1;
+       delay(200);
+   }
+   if(digitalRead(b2) && b2_pressed && b2_flag){
+    b2_pressed=0;
+    menu=3;
+    b2_flag=0;
+    delay(200);
+   }
+   if(digitalRead(b2) && b2_pressed && !b2_flag){
+    b2_pressed=0;
+    menu = 1;
+    b2_flag=1;
+    delay(200);
+   }
+   escolhaMenu();
 }
 
 void menuInicial(){
