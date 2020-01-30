@@ -1,12 +1,14 @@
 //github.com/olikraus/u8glib/wiki/userreference
 #include "U8glib.h"
-#include "DHT.h"
 #include <string.h>
 
-#define DHTPIN A1 // pino que estamos conectado
-#define DHTTYPE DHT11 // DHT 11
-
-DHT dht(DHTPIN, DHTTYPE);
+//--- integração com o led e buzzer ---
+#define PUSH_BUTTON_PIN 2 // O botão está conectado no pino digital 2 do arduino
+#define RED_LED_PIN 8 // O led vermelho está conectado no pino digital 8 do arduino
+#define GREEN_LED_PIN 9 // O led verde está conectado no pino digital 9 do arduino
+#define BLUE_LED_PIN 10 // O led azul está conectado no pino digital 10 do arduino
+#define BUZZER_PIN 11 // O buzzer está conectado no pino digital 11 do arduino (Nesse caso é um led branco, mas funciona da mesma forma)
+// -----------------------------------------------------
 
 // setup u8g object, please remove comment from one of the following constructor calls
 // IMPORTANT NOTE: The following list is incomplete. The complete list of supported 
@@ -29,11 +31,20 @@ U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NO_ACK);  // Display which does not send A
 #define b1 2
 #define b2 3
 #define acenador 4
+
  
 void setup(void) 
 {
+  // Define os leds como saída. Ou seja, seu valor será definido dentro do código, que será passado para o arduino e ligará/desligará o led de acordo com o funcionamento do sistema.
+  pinMode(RED_LED_PIN, OUTPUT);    
+  pinMode(GREEN_LED_PIN, OUTPUT);
+  pinMode(BLUE_LED_PIN, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+
+  digitalWrite(GREEN_LED_PIN, 1); // led verde é ligado (write = escreve/define o valor de saída - 5V (1) ou 0V(0)), indicando que o sistema está funcionando.
+
+  
   Serial.begin(9600);
-  dht.begin();
   if ( u8g.getMode() == U8G_MODE_R3G3B2 ) {
     u8g.setColorIndex(255);     // white
   }

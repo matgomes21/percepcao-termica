@@ -2,6 +2,8 @@ int menu=1,first=1;
 boolean terminar;
 boolean b1_flag = 1,b2_flag = 1,b1_pressed=0,b2_pressed=0,TC_flag=1,a_pressed=0,a_flag=1;
 char T[10];
+float TC;
+const int LM35 = A0;
 
 void escolhaMenu(){
   switch(menu){
@@ -29,6 +31,7 @@ void changeMenu(){
    if(digitalRead(b1) && b1_pressed && b1_flag)
    {
        b1_pressed = 0;
+       TC_flag=1;
        menu = 2;    
        b1_flag=0;
        delay(200);
@@ -55,6 +58,7 @@ void changeMenu(){
 }
 
 void menuInicial(){
+  digitalWrite(GREEN_LED_PIN,1);
   u8g.setFont(u8g_font_8x13B);//Determina tamanho da fonte e o "B" coloca em negrito
   u8g.drawStr( 18, 15, "Menu Inicial");//Escreve na tela, parâmetros: posição x, posição y, texto
   u8g.setFont(u8g_font_8x13);//Determina tamanho da fonte
@@ -72,20 +76,7 @@ void menuInicial(){
 float t;
 void readTemperatura() 
 {
-  // A leitura da temperatura e umidade pode levar 250ms!
-  // O atraso do sensor pode chegar a 2 segundos.
-  t = dht.readTemperature();
-  // testa se retorno é valido, caso contrário algo está errado.
-  if (isnan(t)) 
-  {
-    Serial.println("Failed to read from DHT");
-  } 
-  else
-  {
-    Serial.print("Temperatura: ");
-    Serial.print(t);
-    Serial.println(" *C");
-  }
+  t = (float(analogRead(LM35))*5/(1023))/0.01;
 }
 
 void menuTC(){
@@ -99,6 +90,7 @@ void menuTC(){
 }
 
 void menuTeste(){
+  
   if(TC_flag){
     readTemperatura();
     TC_flag=0;
@@ -128,15 +120,29 @@ void menuIniciarTeste(){
     u8g.setFont(u8g_font_fub30);
     dtostrf(t,3,1,T);
     u8g.drawStr( 10, 57, T);
+    digitalWrite(BLUE_LED_PIN,1);
+    digitalWrite(GREEN_LED_PIN,0);
+    digitalWrite(RED_LED_PIN,0);
+    digitalWrite(BUZZER_PIN,0);
   }
   if(first&&terminar){
-    u8g.setFont(u8g_font_fub30);
+    TC = t;
+    /*u8g.setFont(u8g_font_fub30);
     dtostrf(t,3,1,T);
-    u8g.drawStr( 10, 57, T);
+    u8g.drawStr( 10, 57, T);*/
     first=0;
   }
   if(first==0&&terminar){
+    digitalWrite(BUZZER_PIN,1);
+    digitalWrite(GREEN_LED_PIN,0);
+    digitalWrite(RED_LED_PIN, 1);
+    digitalWrite(BLUE_LED_PIN,0);
     //delay(1000);
+    dtostrf(TC,3,1,T);
+    u8g.setFont(u8g_font_8x13B);
+    u8g.drawStr( 8,15,"TC");
+    u8g.setFont(u8g_font_8x13);
+    u8g.drawStr( 5, 20, T);
     t++;
     u8g.setFont(u8g_font_fub30);
     dtostrf(t,3,1,T);
