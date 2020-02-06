@@ -58,7 +58,9 @@ void changeMenu(){
 }
 
 void menuInicial(){
+  digitalWrite(RED_LED_PIN,0);
   digitalWrite(GREEN_LED_PIN,1);
+  digitalWrite(BLUE_LED_PIN,0);
   u8g.setFont(u8g_font_8x13B);//Determina tamanho da fonte e o "B" coloca em negrito
   u8g.drawStr( 18, 15, "Menu Inicial");//Escreve na tela, parâmetros: posição x, posição y, texto
   u8g.setFont(u8g_font_8x13);//Determina tamanho da fonte
