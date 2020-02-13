@@ -86,6 +86,7 @@ void menuTeste(){
   
   if(TC_flag){
     TC_flag=0;
+    t = tempSensor.getTemperature();
   }
   u8g.setFont(u8g_font_8x13);
   u8g.drawStr(5, 25, "Pressione acenador");
