@@ -1,9 +1,9 @@
 int menu=1,first=1;
 boolean terminar;
 boolean b1_flag = 1,b2_flag = 1,b1_pressed=0,b2_pressed=0,TC_flag=1,a_pressed=0,a_flag=1;
+float t;
 char T[10];
 float TC;
-const int LM35 = A0;
 
 void escolhaMenu(){
   switch(menu){
@@ -24,7 +24,9 @@ void escolhaMenu(){
 void changeMenu(){
   if(!digitalRead(b1)){
     b1_pressed=1;
+    Serial.println("passou");
   }
+  
   if(!digitalRead(b2)){
     b2_pressed=1;
   }
@@ -66,24 +68,13 @@ void menuInicial(){
   u8g.setFont(u8g_font_8x13);//Determina tamanho da fonte
   u8g.drawStr( 5,30,"1.Temp Corporal");
   u8g.drawStr( 5,45,"2.Iniciar Teste");
-
-
-  
+ 
 }
-// Conecte pino 1 do sensor (esquerda) ao +5V
-// Conecte pino 2 do sensor ao pino de dados definido em seu Arduino
-// Conecte pino 4 do sensor ao GND
-// Conecte o resistor de 10K entre pin 2 (dados) 
-// e ao pino 1 (VCC) do sensor
-float t;
-void readTemperatura() 
-{
-  t = (float(analogRead(LM35))*5/(1023))/0.01;
-}
+
 
 void menuTC(){
   if(TC_flag){
-    readTemperatura();
+    t = tempSensor.getTemperature();
     TC_flag = 0;
   }
   u8g.setFont(u8g_font_fub30);
@@ -94,7 +85,6 @@ void menuTC(){
 void menuTeste(){
   
   if(TC_flag){
-    readTemperatura();
     TC_flag=0;
   }
   u8g.setFont(u8g_font_8x13);

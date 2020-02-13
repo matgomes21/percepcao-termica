@@ -2,6 +2,11 @@
 #include "U8glib.h"
 #include <string.h>
 
+//MAX
+#include <Wire.h>
+#include "Protocentral_MAX30205.h"
+MAX30205 tempSensor;
+
 //--- integração com o led e buzzer ---
 #define PUSH_BUTTON_PIN 2 // O botão está conectado no pino digital 2 do arduino
 #define RED_LED_PIN 8 // O led vermelho está conectado no pino digital 8 do arduino
@@ -35,6 +40,11 @@ U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NO_ACK);  // Display which does not send A
  
 void setup(void) 
 {
+
+  // MAX
+  Wire.begin();
+  tempSensor.begin();
+  
   // Define os leds como saída. Ou seja, seu valor será definido dentro do código, que será passado para o arduino e ligará/desligará o led de acordo com o funcionamento do sistema.
   pinMode(RED_LED_PIN, OUTPUT);    
   pinMode(GREEN_LED_PIN, OUTPUT);
