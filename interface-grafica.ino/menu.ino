@@ -1,7 +1,8 @@
 int menu=1,first=1;
-boolean terminar;
+int test_flag=1;
 boolean b1_flag = 1,b2_flag = 1,b1_pressed=0,b2_pressed=0,TC_flag=1,a_pressed=0,a_flag=1;
 float t;
+float T1,T2,T3;
 char T[10];
 float TC;
 
@@ -77,9 +78,13 @@ void menuTC(){
     t = tempSensor.getTemperature();
     TC_flag = 0;
   }
+  u8g.setFont(u8g_font_8x13B);
+  u8g.drawStr(55, 15, "TC");
   u8g.setFont(u8g_font_fub30);
   dtostrf(t,3,1,T);
-  u8g.drawStr( 10, 57, T);
+  u8g.drawStr( 5, 57, T);
+  u8g.drawCircle(93,35,4);//x,y,radius
+  u8g.drawStr( 100,57, "C");
 }
 
 void menuTeste(){
@@ -89,8 +94,8 @@ void menuTeste(){
     t = tempSensor.getTemperature();
   }
   u8g.setFont(u8g_font_8x13);
-  u8g.drawStr(5, 25, "Pressione acenador");
-  u8g.drawStr(5,35,"para iniciar");
+  u8g.drawStr(1, 25, "Aperte acionador");
+  u8g.drawStr(1,35,"para iniciar");
 
   if(!digitalRead(acenador)){
     a_pressed=1;
@@ -100,45 +105,55 @@ void menuTeste(){
       a_pressed = 0;
       menu = 4;    
       a_flag=0;
-      terminar=1;
+      test_flag=1;
       escolhaMenu();
   }  
 }
 
 void menuIniciarTeste(){
   if(!digitalRead(acenador)){
-    terminar=0;
+    test_flag=0;
   }
-  if(terminar==0){
+  
+  if(test_flag==0){
+
+    T1 = t;
     u8g.setFont(u8g_font_fub30);
-    dtostrf(t,3,1,T);
+    dtostrf(T1,3,1,T);
     u8g.drawStr( 10, 57, T);
+    
     digitalWrite(BLUE_LED_PIN,1);
     digitalWrite(GREEN_LED_PIN,0);
     digitalWrite(RED_LED_PIN,0);
     digitalWrite(BUZZER_PIN,0);
+
+  //  if(!digitalRead(acenador)){
+    //test_flag=2;
+    //}    
+    
   }
-  if(first&&terminar){
+  if(first){
     TC = t;
-    /*u8g.setFont(u8g_font_fub30);
-    dtostrf(t,3,1,T);
-    u8g.drawStr( 10, 57, T);*/
     first=0;
   }
-  if(first==0&&terminar){
+  
+  if(first==0&&test_flag==1){
+    
     digitalWrite(BUZZER_PIN,1);
     digitalWrite(GREEN_LED_PIN,0);
     digitalWrite(RED_LED_PIN, 1);
     digitalWrite(BLUE_LED_PIN,0);
-    //delay(1000);
+    
     dtostrf(TC,3,1,T);
     u8g.setFont(u8g_font_8x13B);
     u8g.drawStr( 8,15,"TC");
     u8g.setFont(u8g_font_8x13);
-    u8g.drawStr( 5, 20, T);
-    t++;
+    u8g.drawStr( 30, 15, T);
+    
+    t = tempSensor.getTemperature();
     u8g.setFont(u8g_font_fub30);
     dtostrf(t,3,1,T);
     u8g.drawStr( 10, 57, T);
+    
   }
 }
