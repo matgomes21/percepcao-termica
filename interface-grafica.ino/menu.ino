@@ -1,3 +1,5 @@
+
+
 int menu=1,first=1;
 int test_flag=1;
 boolean b1_flag = 1,b2_flag = 1,b1_pressed=0,b2_pressed=0,TC_flag=1,a_pressed=0,a_flag=1;
@@ -25,7 +27,6 @@ void escolhaMenu(){
 void changeMenu(){
   if(!digitalRead(b1)){
     b1_pressed=1;
-    Serial.println("passou");
   }
   
   if(!digitalRead(b2)){
@@ -111,25 +112,20 @@ void menuTeste(){
 }
 
 void menuIniciarTeste(){
-  if(!digitalRead(acenador)){
-    test_flag=0;
-  }
-  
+
   if(test_flag==0){
 
     T1 = t;
     u8g.setFont(u8g_font_fub30);
     dtostrf(T1,3,1,T);
     u8g.drawStr( 10, 57, T);
+    u8g.drawCircle(93,35,4);//x,y,radius
+    u8g.drawStr( 100,57, "C");
     
     digitalWrite(BLUE_LED_PIN,1);
     digitalWrite(GREEN_LED_PIN,0);
     digitalWrite(RED_LED_PIN,0);
-    digitalWrite(BUZZER_PIN,0);
-
-  //  if(!digitalRead(acenador)){
-    //test_flag=2;
-    //}    
+    digitalWrite(BUZZER_PIN,0); 
     
   }
   if(first){
@@ -137,7 +133,7 @@ void menuIniciarTeste(){
     first=0;
   }
   
-  if(first==0&&test_flag==1){
+  if(first==0&&test_flag){
     
     digitalWrite(BUZZER_PIN,1);
     digitalWrite(GREEN_LED_PIN,0);
@@ -153,7 +149,13 @@ void menuIniciarTeste(){
     t = tempSensor.getTemperature();
     u8g.setFont(u8g_font_fub30);
     dtostrf(t,3,1,T);
-    u8g.drawStr( 10, 57, T);
+    u8g.drawStr( 5, 57, T);
+    u8g.drawCircle(93,35,4);//x,y,radius
+    u8g.drawStr( 100,57, "C");
+
+    if(!digitalRead(acenador)){
+      test_flag=0;
+    }
     
   }
 }
