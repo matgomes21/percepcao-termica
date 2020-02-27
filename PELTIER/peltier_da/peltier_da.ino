@@ -21,15 +21,35 @@ void loop() {
     String b = Serial.readString();
     int a = b.toInt();
     
-   
-    value[count] = a;
-    digitalWrite(pos[count], HIGH);
-    count++;
-    
-    Serial.print("Saída D/A:"); 
+   if(a == 1 | a == 0){
+      value[count] = a;
+      digitalWrite(pos[count], value[count]);
+      count++;
+      
+      Serial.print("Saída D/A:"); 
+      for(int ct=9; ct>=0; ct--) Serial.print(value[ct], BIN);
+      Serial.println(" ");   
+   }
+  else if (a == 2) // reset
+  {
+    for (int c = 2; c < 12; c++) {
+      digitalWrite(c, LOW);
+      value[c-2] = 0;
+      count = 0;
+    }
     for(int ct=9; ct>=0; ct--) Serial.print(value[ct], BIN);
-    Serial.println(" ");   
-    
-
+    Serial.println(" "); 
+  
+  }
+  }
+  if(count >= 12)
+  {
+    for (int c = 2; c < 12; c++) {
+      digitalWrite(c, LOW);
+      value[c-2] = 0;
+    }
+    count = 0;
+    for(int ct=9; ct>=0; ct--) Serial.print(value[ct], BIN);
+    Serial.println(" "); 
   }
 }
