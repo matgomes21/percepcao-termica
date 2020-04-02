@@ -1,29 +1,19 @@
+#include <Wire.h>
+#include "Protocentral_MAX30205.h"
+MAX30205 tempSensor;
+
 // Valores do Potenciometro
 #define PULSE_TIMED       10                    // millisecond delay 
 #define SERIAL_BAUD_RATE  9600                  // Baud rate to the serial
-
 
 // Variáveis
 const int pinUD = 8;                            // --> X9C103P pin 2
 const int pinINC = 9;                           // --> X9C103P pin 1
 const int CS = 10;                              // --> X9C103P pin 7
-const int ohms = 10;
-const int temp = 1000;
-
-void setup() {
-  // Definindo Entradas e Saída
-  pinMode (CS, OUTPUT);
-  pinMode (pinUD, OUTPUT);
-  pinMode (pinINC, OUTPUT);
-
-  // Iniciando Pinos
-  digitalWrite(CS, HIGH);
-
-  // Iniciando serial
-  Serial.begin(SERIAL_BAUD_RATE);
-  Serial.println("Iniciando Controle do Pontenciometro... \n");  
-  
-}
+const int ohms = 5;
+const int temp = 250;
+int aux = 0;
+int n = 20;
 
 void X9C103P_INC() {
   // High to prepare the falling edge
@@ -35,18 +25,56 @@ void X9C103P_INC() {
   digitalWrite(CS, HIGH);                         // standby mode
 }
 
+void setar() {
+  while (1) {
+    digitalWrite(pinUD, LOW);                  // With the U/D pin HIGH, the mode is Wiper UP
+    for (int q = 1; q <= 100; q++)X9C103P_INC();                              // Manage the pins state to increment
+    Serial.println("Pontenciometro Zerado \n");
+    break;
+  }
+}
+void setup() {
+  // Definindo Entradas e Saída
+  pinMode (CS, OUTPUT);
+  pinMode (pinUD, OUTPUT);
+  pinMode (pinINC, OUTPUT);
+
+  // Iniciando Pinos
+  digitalWrite(CS, HIGH);
+
+  // Iniciando i2c and serial
+  Wire.begin();
+  Serial.begin(SERIAL_BAUD_RATE);
+  tempSensor.begin();   // set continuos mode, active mode
+  Serial.println("Iniciando Controle do Pontenciometro... \n");
+  setar();
+
+}
+
+
+void max3025() {
+  float temp = tempSensor.getTemperature(); // read temperature for every 100ms
+  Serial.print(temp , 2);
+  Serial.println("'c" );
+  delay(100);
+}
+
 void loop() {
+  max3025();
   if (Serial.available() > 0) {
     char value = Serial.read();
     switch (value) {
       case 'u':                                     // u - up
         while (1) {
           digitalWrite(pinUD, LOW);                  // With the U/D pin HIGH, the mode is Wiper UP
-          for (int i = 1; i <= ohms; i++)X9C103P_INC();                              // Manage the pins state to increment
+          for (int k = 1; k <= ohms; k++)X9C103P_INC();                              // Manage the pins state to increment
           delay(temp);                       // delay a bit for viewing
           Serial.println("Incrementando...");         // show that is incrementing
           value = Serial.read();
-          if (value == 's'){
+          aux++;
+          max3025();
+          if (value == 's' or aux == n) {
+            aux = 0;
             Serial.println("Stop!");
             break;
           }
@@ -59,14 +87,18 @@ void loop() {
           delay(temp);                       // delay a bit for viewing
           Serial.println("Decrementando...");         // show that is decrementing
           value = Serial.read();
-          if (value == 's'){
+          aux++;
+          max3025();
+          if (value == 's' or aux == n) {
+            aux = 0;
             Serial.println("Stop!");
             break;
           }
-        }        
+        }
         break;
       default:
         Serial.println("Opção inválida.");
     }
   }
+  delay(500);
 }
