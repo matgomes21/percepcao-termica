@@ -10,10 +10,10 @@ MAX30205 tempSensor;
 const int pinUD = 8;                            // --> X9C103P pin 2
 const int pinINC = 9;                           // --> X9C103P pin 1
 const int CS = 10;                              // --> X9C103P pin 7
-const int ohms = 5;
-const int temp = 250;
+const int ohms = 1;
+const int temp = 1000;
 int aux = 0;
-int n = 20;
+int limit = 10;
 
 void X9C103P_INC() {
   // High to prepare the falling edge
@@ -27,7 +27,7 @@ void X9C103P_INC() {
 
 void setar() {
   while (1) {
-    digitalWrite(pinUD, LOW);                  // With the U/D pin HIGH, the mode is Wiper UP
+    digitalWrite(pinUD, HIGH);                  // With the U/D pin HIGH, the mode is Wiper UP
     for (int q = 1; q <= 100; q++)X9C103P_INC();                              // Manage the pins state to increment
     Serial.println("Pontenciometro Zerado \n");
     break;
@@ -60,7 +60,7 @@ void max3025() {
 }
 
 void loop() {
-  max3025();
+  //max3025();
   if (Serial.available() > 0) {
     char value = Serial.read();
     switch (value) {
@@ -69,11 +69,12 @@ void loop() {
           digitalWrite(pinUD, LOW);                  // With the U/D pin HIGH, the mode is Wiper UP
           for (int k = 1; k <= ohms; k++)X9C103P_INC();                              // Manage the pins state to increment
           delay(temp);                       // delay a bit for viewing
-          Serial.println("Incrementando...");         // show that is incrementing
+          Serial.println("Aumentando resistencia e Diminuindo Tensão ...");                               // show that is incrementing
+         
           value = Serial.read();
           aux++;
-          max3025();
-          if (value == 's' or aux == n) {
+          //max3025();
+          if (value == 's' or aux == limit) {
             aux = 0;
             Serial.println("Stop!");
             break;
@@ -85,11 +86,11 @@ void loop() {
           digitalWrite(pinUD, HIGH);                   // With the U/D pin HIGH, the mode is Wiper UP
           for (int j = 1; j <= ohms; j++)X9C103P_INC();                              // Manage the pins state to decrement
           delay(temp);                       // delay a bit for viewing
-          Serial.println("Decrementando...");         // show that is decrementing
+          Serial.println("Diminuindo resistencia e Aumentando Tensão ...");         // show that is decrementing
           value = Serial.read();
           aux++;
-          max3025();
-          if (value == 's' or aux == n) {
+          //max3025();
+          if (value == 's' or aux == limit) {
             aux = 0;
             Serial.println("Stop!");
             break;

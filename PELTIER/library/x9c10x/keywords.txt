@@ -1,0 +1,11 @@
+# Arduino IDE Keywords for Syntax Coloring
+ 
+# Keyword for class ScaleElginDP3005
+x9c10x                  KEYWORD1
+ 
+# Keyword for class functions
+set                 KEYWORD2
+up                  KEYWORD2
+down                KEYWORD2
+readpot             KEYWORD2
+stop                KEYWORD;
