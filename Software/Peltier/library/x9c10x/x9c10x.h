@@ -14,7 +14,9 @@ class x9c10x{
         void set(int init, int lt);         // Init = initial resistance | lt = limit resistance        
         void up(int ohms, int temp);        // Speed of Ohms/Temp UP
         void down(int ohms, int temp);      // Speed of Ohms/Temp DOWN
-        void stop(int button);              // Define sudden stop button 
+        void downOnce(int ohms, int temp);      // Speed of Ohms/Temp DOWN
+        void upOnce(int ohms, int temp);      // Speed of Ohms/Temp DOWN
+        void stop(void);              // Define sudden stop button 
         void readpot(int delay_temp, String analog_pin);    // Read resistance
 };
 
