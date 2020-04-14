@@ -46,11 +46,37 @@ const long interval = 2000;
 // Collects and updates the temperature of the sensor max30205
 void update_max()
 {
+    unsigned long currentMillis = millis();
     if (currentMillis - previousMillis >= interval)
     {
         temperatura = tempSensor.getTemperature();
         previousMillis = currentMillis;
     }
+}
+
+void stopPrint(int count) {
+  switch (count) {
+    case 0:
+      t1 = temperatura;
+      Serial.print("T1: ");
+      Serial.print(t1);
+      Serial.println("'C");
+      c++;
+      break;
+    case 1:
+      t2 = temperatura;
+      Serial.print("T2: ");
+      Serial.print(t2);
+      Serial.println("'C");
+      c++;
+      break;
+    default:
+      t3 = temperatura;
+      Serial.print("T3: ");
+      Serial.print(t3);
+      Serial.println("'C");
+      c++;
+  }
 }
 
 // Struct with screen methods
@@ -191,7 +217,7 @@ Screen screen;
 // Executes the threshold test of the collected temperatures
 void testLimiar()
 {
-    if (button.isPressed())
+    if (btnT.isPressed())
     {
 
         if (c != 3)
@@ -209,7 +235,7 @@ void testLimiar()
                     pot.upOnce(1, 500);
                     screen.menuTest();
 
-                    if (button.isPressed())
+                    if (btnT.isPressed())
                     {
                         y = false;
                         stopPrint(c);
@@ -239,7 +265,7 @@ void testLimiar()
         }
     }
     rgb.turnOn('w');
-    screen.Test();
+    screen.menuTest();
 
 }
 
@@ -304,7 +330,7 @@ void setup()
     Serial.begin(9600);
 
     // Set button
-    button.interrupt();
+    btnT.interrupt();
 
     // Set Pot Digital
     pot.set(0, 100);

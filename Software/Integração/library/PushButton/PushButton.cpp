@@ -20,7 +20,7 @@ boolean PushButton::pressed()
     if (!digitalRead(_pin))
         tbut = 0x01;
 
-    if (digitalRead(_pin) && tbut && !savepressed)
+    if (digitalRead(_pin) && tbut)
     {
         tbut = 0x00;
         delay(200);
