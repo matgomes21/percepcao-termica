@@ -30,8 +30,8 @@ PushButton btnC2(btnControl1);
 LedRGB rgb(pin1RGB, pin2RGB, pin3RGB);
 
 // Creating variables
-boolean a = LOW,
-        savepressed = 0x01;
+boolean a = LOW;
+bool savepressed = false;
 int menu = 1;
 float   temperatura,
         c = 0,
@@ -102,6 +102,7 @@ typedef struct oled
 
     void menuTC()
     {
+        update_max();
         // Turns on Blue light on led
         rgb.turnOn('b');
 
@@ -114,20 +115,20 @@ typedef struct oled
 
         // Body
         // Temperature Square
-        u8g.drawRFrame(0, 17, 88, 46, 2);
+        u8g.drawRFrame(23, 17, 93, 46, 2);
         u8g.setFont(u8g_font_fub20);
-
         // Updates displayed temperature
-        u8g.setPrintPos(6, 50);
+        u8g.setPrintPos(30, 50);
         u8g.print(temperatura, 1);
         // Draw "ºC"
-        u8g.drawCircle(62, 33, 3);
-        u8g.drawStr(66, 50, "C");
+        u8g.drawCircle(88, 33, 3);
+        u8g.drawStr(92, 50, "C");
+        
     }
 
     void menuTest()
     {
-        void update_max();
+        update_max();
 
         if (temp_limiar == 0)
         {
@@ -275,25 +276,25 @@ void changeMenu()
     if (btnC1.pressed() && !savepressed)
     {
         menu = 2;
-        savepressed = 0x01;
+        savepressed = true;
         delay(200);
     }
     else if (btnC1.pressed() && savepressed)
     {
         menu = 1;
-        savepressed = 0x00;
+        savepressed = false;
         delay(200);
     }
     if (btnC2.pressed() && !savepressed)
     {
         menu = 3;
-        savepressed = 0x01;
+        savepressed = true;
         delay(200);
     }
     if (btnC2.pressed() && savepressed)
     {
         menu = 1;
-        savepressed = 0x00;
+        savepressed = false;
         delay(200);
     }
     chooseMenu();
