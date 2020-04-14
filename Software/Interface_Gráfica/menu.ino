@@ -69,8 +69,7 @@ void menuInicial(){
   u8g.drawStr( 18, 15, "Menu Inicial");//Escreve na tela, parâmetros: posição x, posição y, texto
   u8g.setFont(u8g_font_8x13);//Determina tamanho da fonte
   u8g.drawStr( 5,30,"1.Temp Corporal");
-  u8g.drawStr( 5,45,"2.Iniciar Teste");
- 
+  u8g.drawStr( 5,45,"2.Iniciar Teste"); 
 }
 
 

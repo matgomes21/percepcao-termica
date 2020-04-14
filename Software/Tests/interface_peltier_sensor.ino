@@ -1,21 +1,28 @@
+// Incluindo Bibliotecas
 #include "U8glib.h"
 #include <Wire.h>
 #include "Protocentral_MAX30205.h"
 #include <x9c10x.h>
-#include <ezButton.h>
+#include <Buzzer.h>
+#include <PushButton.h>
 
+// Create definition
 #define led 5
-#define bt 4
+#define bt 2
+#define buz 7
 
+// Create objects
 U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NONE);
-
 MAX30205 tempSensor;
 x9c10x pot(10, 9, 8);
-ezButton button(bt);
+Buzzer buzz(buz);
+PushButton button(bt);
 
-int temperatura;
-int c = 0;
-int t1 = 0, t2 = 0, t3 = 0, temp_limiar = 0;
+
+boolean a = LOW;
+float temperatura;
+float c = 0;
+float t1 = 0, t2 = 0, t3 = 0, temp_limiar = 0;
 
 unsigned long previousMillis = 0;
 //Intervalo de medicao temperatura
@@ -25,14 +32,14 @@ void draw()
 {
   if (temp_limiar == 0) {
     //Retangulo temperatura atual
-    u8g.drawRFrame(0, 17, 84, 46, 2);
+    u8g.drawRFrame(0, 17, 88, 46, 2);
     u8g.setFont(u8g_font_fub20);
     //Atualiza a temperatura no display
-    u8g.setPrintPos(13, 50);
-    u8g.print(temperatura);
+    u8g.setPrintPos(6, 50);
+    u8g.print(temperatura,1);
     //Circulo grau
-    u8g.drawCircle(51, 33, 3);
-    u8g.drawStr( 56, 50, "C");
+    u8g.drawCircle(62, 33, 3);
+    u8g.drawStr( 66, 50, "C");
 
     //Box superior amarelo
     u8g.setFont(u8g_font_8x13B);
@@ -43,49 +50,49 @@ void draw()
 
     if (t1 != 0) {
       //box t1
-      u8g.drawRFrame(86, 16, 42, 15, 2);
+      u8g.drawRFrame(87, 16, 40, 15, 2);
       u8g.setFont(u8g_font_6x12);
       //Atualiza na tela o valor da t1
-      u8g.setPrintPos(97, 26);
-      u8g.print(t1);
-      u8g.drawCircle(110, 19, 1);
-      u8g.drawStr(112, 26, "C");
+      u8g.setPrintPos(92, 26);
+      u8g.print(t1,1);
+      u8g.drawCircle(117, 19, 1);
+      u8g.drawStr(119, 26, "C");
       u8g.setColorIndex(1);
     }
 
     if (t2 != 0) {
       //box t2
-      u8g.drawRFrame(86, 31, 42, 15, 2);
+      u8g.drawRFrame(87, 31, 40, 15, 2);
       u8g.setFont(u8g_font_6x12);
       //Atualiza na tela o valor da t1
-      u8g.setPrintPos(97, 42);
-      u8g.print(t2);
-      u8g.drawCircle(110, 35, 1);
-      u8g.drawStr(112, 42, "C");
+      u8g.setPrintPos(92, 42);
+      u8g.print(t2,1);
+      u8g.drawCircle(117, 35, 1);
+      u8g.drawStr(119, 42, "C");
       u8g.setColorIndex(1);
     }
     if (t3 != 0) {
       //box t3
-      u8g.drawRFrame(86, 46, 42, 15, 2);
+      u8g.drawRFrame(87, 46, 40, 15, 2);
       u8g.setFont(u8g_font_6x12);
       //Atualiza na tela o valor da t1
-      u8g.setPrintPos(97, 56);
-      u8g.print(t3);
-      u8g.drawCircle(110, 48, 1);
-      u8g.drawStr(112, 56, "C");
+      u8g.setPrintPos(92, 56);
+      u8g.print(t3,1);
+      u8g.drawCircle(117, 48, 1);
+      u8g.drawStr(119, 56, "C");
       u8g.setColorIndex(1);
     }
   }
   if (temp_limiar != 0) {
     //Retangulo temperatura atual
-    u8g.drawRFrame(30, 17, 84, 46, 2);
+    u8g.drawRFrame(23, 17, 93, 46, 2);
     u8g.setFont(u8g_font_fub20);
     //Atualiza a temperatura no display
-    u8g.setPrintPos(43, 50);
-    u8g.print(temp_limiar);
+    u8g.setPrintPos(30, 50);
+    u8g.print(temp_limiar,1);
     //Circulo grau
-    u8g.drawCircle(81, 33, 3);
-    u8g.drawStr( 86, 50, "C");
+    u8g.drawCircle(88, 33, 3);
+    u8g.drawStr( 92, 50, "C");
 
     //Box superior amarelo
     u8g.setFont(u8g_font_8x13B);
@@ -94,9 +101,6 @@ void draw()
     u8g.drawStr( 17, 13, "TEMP LIMIAR");
     u8g.setColorIndex(1);
   }
-
-
-
 }
 
 void stopPrint(int count) {
@@ -120,30 +124,40 @@ void stopPrint(int count) {
       Serial.print("T3: ");
       Serial.print(t3);
       Serial.println("'C");
-      c = 3;
+      c++;
   }
 }
 
 void setup(void)
 {
+  // initialization of comunication
   Serial.begin(9600);
   tempSensor.begin();
   Wire.begin();
   Serial.begin(9600);
+
+  // Initialization of led
   pinMode(led, OUTPUT);
   digitalWrite(led, LOW);
 
+  // Set Buzzer
+  pinMode(7, OUTPUT);
+
+  //Set button
+  button.interrupt();
+
+  // Initialization monitor serial
   Serial.println("Iniciando Controle do Pontenciometro... \n");
   pot.set(0, 100);
 }
 
 void loop(void)
 {
-  button.loop();
-  if (button.isPressed()) {
-    button.debaunce(100);
+  
+  if (button.isPressed()) {   
 
     if (c != 3) {
+      buzz.beep(500);
       int counter = 0;
       bool y = true;
       boolean flag = LOW;
@@ -154,9 +168,7 @@ void loop(void)
           pot.upOnce(1, 500);
           updateOled();
 
-          button.loop();
           if (button.isPressed()) {
-            button.debaunce(100);
             y = false;
             stopPrint(c);
           }

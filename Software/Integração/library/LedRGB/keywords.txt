@@ -1,0 +1,11 @@
+# Arduino IDE Keywords for Syntax Coloring
+ 
+# Keyword for class ScaleElginDP3005
+LedRGB             KEYWORD1
+ 
+# Keyword for class functions
+LedRGB             KEYWORD2
+turnOn             KEYWORD2
+
+
+# LedRGB.ledRed()
