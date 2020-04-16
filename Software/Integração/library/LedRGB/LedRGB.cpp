@@ -12,13 +12,13 @@ LedRGB::LedRGB(int p1,int p2, int p3){
 
 void LedRGB::turnOn(char colour){
     switch(colour){
-        case 'b':
+        case 'g':
             digitalWrite(blue,0);
             digitalWrite(green,1);
             digitalWrite(red,0);
             break;
 
-        case 'g':
+        case 'b':
             digitalWrite(blue,1);
             digitalWrite(green,0);
             digitalWrite(red,0);
