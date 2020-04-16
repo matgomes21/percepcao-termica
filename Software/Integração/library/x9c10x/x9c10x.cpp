@@ -9,7 +9,7 @@
 #include <ezButton.h>
 
 #define PULSE_TIMED 10
-#define cut 6
+#define cut 12
 int _cs, _inc, _ud, limit, aux = 0;
 char value, condicional;
 int count = 0;

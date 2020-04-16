@@ -49,5 +49,5 @@ void debaunce()
 }
 void PushButton::interrupt()
 {
-    attachInterrupt(digitalPinToInterrupt(_pin), debaunce, RISING);
+    attachInterrupt(digitalPinToInterrupt(_pin), debaunce, LOW);
 }
