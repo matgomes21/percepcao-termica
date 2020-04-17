@@ -262,6 +262,7 @@ void testLimiar()
       if (flag == HIGH)
       {
         // Turn on blue light
+        buz.beep(500);
         rgb.turnOn('b');
         for (int i = 1; i <= counter; i++)
         {
@@ -346,11 +347,11 @@ void setup()
   Serial.begin(9600);
   tempSensor.begin();
   Wire.begin();
-  Serial.begin(9600);
 
   // Set Pot Digital
   pot.set(0, 100);
 }
+
 void updateTest() {
   u8g.firstPage();
   do
