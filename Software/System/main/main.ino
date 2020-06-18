@@ -85,6 +85,25 @@ void stopPrint(int count)
 // Struct with screen methods
 typedef struct oled
 {
+  void systemInit()
+  {
+    // Turn on green light on LED
+    rgb.turnOn('g');
+
+    // Header
+    u8g.setFont(u8g_font_8x13B);
+    u8g.drawRBox(0, 0, 127, 16, 2);
+    u8g.setColorIndex(0);
+    u8g.drawStr(18, 13, "ELETRONJUN");
+    u8g.setColorIndex(1);
+
+    // Body
+    u8g.drawRFrame(18, 17, 93, 46, 2);
+    u8g.setFont(u8g_font_8x13); //Determina tamanho da fonte
+    u8g.drawStr(28, 35, "PERCEPCAO");
+    u8g.drawStr(33, 50, "TERMICA");
+  };
+
   void menuInit()
   {
     // Turn on green light on LED
@@ -350,6 +369,15 @@ void setup()
 
   // Set Pot Digital
   pot.set(0, 100);
+
+  //Apresentation Screen 
+  u8g.firstPage();
+  do
+  {
+    screen.systemInit();
+  } while (u8g.nextPage());
+
+  delay(2000);
 }
 
 void updateTest() {
